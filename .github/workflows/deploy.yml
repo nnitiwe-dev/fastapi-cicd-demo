@@ -27,7 +27,7 @@ jobs:
       - name: Deploy CloudFormation Stack
         run: |
           # Run AWS CLI command to deploy the CloudFormation stack
-          aws cloudformation create-stack --stack-name FastAPI_CICD_Stack101 --template-url https://raw.githubusercontent.com/nnitiwe-dev/fastapi-cicd-demo/main/config/aws/cloudformation-template.yml
+          aws cloudformation create-stack --stack-name FastApiCICDstack101 --template-url https://raw.githubusercontent.com/nnitiwe-dev/fastapi-cicd-demo/main/config/aws/cloudformation-template.yml
 
       - name: Get Instance URL
         run: |

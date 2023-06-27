@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get the INSTANCE_ID and REGION values from GitHub Secrets
-INSTANCE_ID=$(aws cloudformation describe-stacks --stack-name FastAPI_CICD_Stack101 --query 'Stacks[0].Outputs[?OutputKey==`MyEC2InstanceID`].OutputValue' --region $AWS_REGION --output text)
+INSTANCE_ID=$(aws cloudformation describe-stacks --stack-name FastApiCICDstack101 --query 'Stacks[0].Outputs[?OutputKey==`MyEC2InstanceID`].OutputValue' --region $AWS_REGION --output text)
 REGION=$AWS_REGION
 
 # Get the public IP address of the EC2 instance
