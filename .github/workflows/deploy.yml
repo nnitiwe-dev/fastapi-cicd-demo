@@ -41,5 +41,15 @@ jobs:
           # Run your script to extract the URL of the running FastAPI application
           INSTANCE_ID=${{ steps.create_update.outputs.instance_id }}
           REGION=${{ secrets.AWS_REGION }}
-          ./config/aws/get_instance_url.sh $INSTANCE_ID $REGION
+          PUBLIC_IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --region $REGION --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+          
+          # Get the public DNS name of the EC2 instance
+          PUBLIC_DNS=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --region $REGION --query 'Reservations[0].Instances[0].PublicDnsName' --output text)
+          # Print the URL of the FastAPI application
+          echo "FastAPI is accessible at:"
+          echo "http://$PUBLIC_IP:8000"
+          echo "or"
+          echo "http://$PUBLIC_DNS:8000"
+
+          
 
