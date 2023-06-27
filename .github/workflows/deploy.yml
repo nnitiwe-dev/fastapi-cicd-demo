@@ -41,7 +41,8 @@ jobs:
           if [[ $create_update_action == "create" ]]; then
             aws cloudformation create-stack --stack-name FastApiCICDstack101 --template-url ${{ secrets.CLOUD_FORMATION_TEMPLATE }}
           else
-            aws cloudformation update-stack --stack-name FastApiCICDstack101 --template-url ${{ secrets.CLOUD_FORMATION_TEMPLATE }}
+            aws cloudformation delete-stack --stack-name FastApiCICDstack101
+            aws cloudformation create-stack --stack-name FastApiCICDstack101 --template-url ${{ secrets.CLOUD_FORMATION_TEMPLATE }}
           fi
           #https://raw.githubusercontent.com/nnitiwe-dev/fastapi-cicd-demo/main/config/aws/cloudformation-template.yml
 
