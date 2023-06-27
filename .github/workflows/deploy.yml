@@ -38,7 +38,8 @@ jobs:
       - name: Get Instance URL
         run: |
           # Run your script to extract the URL of the running FastAPI application
-          stack_outputs=$(aws cloudformation describe-stacks --stack-name FastApiCICDstack101 --query 'Stacks[0].Outputs' --region us-east-1 --output json)
+          stack_outputs=$(aws cloudformation describe-stacks --stack-name FastApiCICDstack101 --query 'Stacks[0].Outputs' --region ${{ secrets.AWS_REGION }} --output json)
+          echo $stack_outputs
           INSTANCE_ID=$(echo $stack_outputs | jq -r '.[] | select(.OutputKey == "MyEC2InstanceID") | .OutputValue')
           REGION=${{ secrets.AWS_REGION }}
           PUBLIC_IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --region $REGION --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
