@@ -1,0 +1,6 @@
+fastapi
+pydantic
+faker
+textblob
+pytest
+httpx
