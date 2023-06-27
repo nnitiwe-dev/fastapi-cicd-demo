@@ -29,6 +29,9 @@ jobs:
           stack_status=$(aws cloudformation describe-stacks --stack-name FastApiCICDstack101 --query 'Stacks[0].StackStatus' --output text --region ${{ secrets.AWS_REGION }} 2>/dev/null)
           if [[ -z $stack_status ]]; then
             create_update_action="create"
+            if [[ $stack_status == "ROLLBACK_COMPLETE" ]]; then
+              create_update_action="update"
+            fi
           else
             create_update_action="update"
           fi
