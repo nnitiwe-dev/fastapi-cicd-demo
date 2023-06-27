@@ -30,7 +30,7 @@ jobs:
           if [[ -z $stack_status ]]; then
             create_update_action="create"
             if [[ $stack_status == "ROLLBACK_COMPLETE" ]]; then
-              create_update_action="update"
+              aws cloudformation delete-stack --stack-name FastApiCICDstack101
             fi
           else
             create_update_action="update"
