@@ -32,6 +32,8 @@ jobs:
             #https://raw.githubusercontent.com/nnitiwe-dev/fastapi-cicd-demo/main/config/aws/cloudformation-template.yml
             
           
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Get Instance URL
         run: |
