@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-053b0d53c279acc90 #Canonical, Ubuntu, 22.04 LTS, amd64 jammy image build on 2023-05-16
+      InstanceType: t2.micro
+      KeyName: ${{ secrets.KEY_PAIR_NAME }}
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          sudo apt update
+          sudo apt upgrade
+          sudo apt install python3-pip
+          sudo apt install python-is-python3
+          sudo apt install -y git
+          git clone https://github.com/nnitiwe-dev/fastapi-cicd-demo.git
+          cd fastapi-cicd-demo
+          pip install -r requirements.txt
+          cd app
+          nohup uvicorn main:app --reload &
+      SecurityGroupIds:
+        - !Ref MySecurityGroup
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow inbound traffic for FastAPI
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+
+Outputs:
+  MyEC2InstanceID:
+    Description: EC2 instance ID
+    Value: !Ref MyEC2Instance
