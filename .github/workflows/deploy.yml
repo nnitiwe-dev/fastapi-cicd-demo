@@ -32,8 +32,9 @@ jobs:
             #https://raw.githubusercontent.com/nnitiwe-dev/fastapi-cicd-demo/main/config/aws/cloudformation-template.yml
             
             # Capture the instance ID and output it for later use
-            INSTANCE_ID=$(aws cloudformation describe-stacks --stack-name FastApiCICDstack101 --query 'Stacks[0].Outputs[?OutputKey==`MyEC2InstanceID`].OutputValue' --region ${{ secrets.AWS_REGION }} --output text)
-            echo "::set-output name=instance_id::$INSTANCE_ID"
+            stack_outputs=$(aws cloudformation describe-stacks --stack-name FastApiCICDstack101 --query 'Stacks[0].Outputs' --region ${{ secrets.AWS_REGION }} --output json)
+            instance_id=$(echo $stack_outputs | jq -r '.[] | select(.OutputKey == "MyEC2InstanceID") | .OutputValue')
+            echo "::set-output name=instance_id::$instance_id"
           
 
       - name: Get Instance URL
