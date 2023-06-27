@@ -25,14 +25,21 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy CloudFormation Stack
+        id: create_update
         run: |
           # Run AWS CLI command to deploy the CloudFormation stack
             aws cloudformation create-stack --stack-name FastApiCICDstack101 --template-url ${{ secrets.CLOUD_FORMATION_TEMPLATE }}
             #https://raw.githubusercontent.com/nnitiwe-dev/fastapi-cicd-demo/main/config/aws/cloudformation-template.yml
+            
+            # Capture the instance ID and output it for later use
+            INSTANCE_ID=$(aws cloudformation describe-stacks --stack-name FastApiCICDstack101 --query 'Stacks[0].Outputs[?OutputKey==`MyEC2InstanceID`].OutputValue' --region ${{ secrets.AWS_REGION }} --output text)
+            echo "::set-output name=instance_id::$INSTANCE_ID"
           
 
       - name: Get Instance URL
         run: |
           # Run your script to extract the URL of the running FastAPI application
-          ./config/aws/get_instance_url.sh
+          INSTANCE_ID=${{ steps.create_update.outputs.instance_id }}
+          REGION=${{ secrets.AWS_REGION }}
+          ./config/aws/get_instance_url.sh $INSTANCE_ID $REGION
 
