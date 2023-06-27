@@ -24,10 +24,22 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy CloudFormation Stack
+      - name: Check if stack exists
         run: |
-          # Run AWS CLI command to deploy the CloudFormation stack
-          aws cloudformation create-stack --stack-name FastApiCICDstack101 --template-url ${{ secrets.CLOUD_FORMATION_TEMPLATE }} --on-failure UPDATE
+          stack_status=$(aws cloudformation describe-stacks --stack-name FastApiCICDstack101 --query 'Stacks[0].StackStatus' --output text --region ${{ secrets.AWS_REGION }} 2>/dev/null)
+          if [[ -z $stack_status ]]; then
+            create_update_action="create"
+          else
+            create_update_action="update"
+          fi
+        
+      - name: Deploy CloudFormation stack
+        run: |
+          if [[ $create_update_action == "create" ]]; then
+            aws cloudformation create-stack --stack-name FastApiCICDstack101 --template-url ${{ secrets.CLOUD_FORMATION_TEMPLATE }}
+          else
+            aws cloudformation update-stack --stack-name FastApiCICDstack101 --template-url ${{ secrets.CLOUD_FORMATION_TEMPLATE }}
+          fi
           #https://raw.githubusercontent.com/nnitiwe-dev/fastapi-cicd-demo/main/config/aws/cloudformation-template.yml
 
       - name: Get Instance URL
